@@ -1,4 +1,4 @@
-# app.py - Fixed version with correct Anthropic client initialization
+# app.py - CORRECT Anthropic client initialization
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -13,8 +13,8 @@ class SatvikAIAssistant:
         if not api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable not set")
         
-        # Correct initialization for anthropic library
-        self.client = anthropic.Client(api_key=api_key)
+        # CORRECT way to initialize Anthropic client
+        self.client = anthropic.Anthropic(api_key=api_key)
         self.content = self.get_all_content()
     
     def get_all_content(self):
@@ -23,7 +23,6 @@ class SatvikAIAssistant:
             "about_me": """
 SATVIK PUTI - Professional Summary
 
-Contact: +33 07 45 64 31 33 | satvik.puti@essec.edu | LinkedIn: satvikputi
 
 EDUCATION:
 • ESSEC Business School Paris, France - Grande École Master's in Management (#3 Top Master of Science Management) Since 2022
@@ -51,9 +50,8 @@ TECHNICAL SKILLS:
             "experience": """
 PROFESSIONAL EXPERIENCE:
 
-STARTUP EXPERIENCE:
 
-Just Build It - Founder (3 months, 2024-2025)
+Just Build It - Founder (3 months, 2024-2025) START UP EXPERIENCE
 • Founded a community for curious people in Paris to build ambitious projects together
 • Organised 3 building sessions with more than 50 participants on building MVPs, AI Agents, and full stack applications
 • Organised an 8 hour hackathon at Ecole 42 Paris with 100+ participants with more than 10K€ sponsorship from Anthropic, Lovable, Cerebras Systems and Windsurf
@@ -84,7 +82,7 @@ UTOPIA ESSEC - Founding Member & Head of Events (12 months, 2024)
 • Hosted Healthcare x AI event with biotech startup founder, Sanofi Director, and VC partner (100+ attendees)
 • Organized events, hackathons, and workshops focused on entrepreneurial endeavors (average 100 attendees per event)
 
-Kula Connect - Founding Member & Head of Startups (6 months, 2024)
+Kula Connect - Founding Member & Head of Startups (6 months, 2024) STARTUP EXPERIENCE
 Kula Connect is a community that aims to foster stronger connections between India and Europe by uniting individuals and facilitating networking, exchange of ideas and collaboration. We grew the community to +1600 members and organised 3 events across Paris, Milan and Amsterdam.
 My Focus: Covered stories of Indian Entrepreneurs in France.
 """,
@@ -233,16 +231,17 @@ QUESTION: {question}
 
 Provide a thoughtful, professional response that showcases Satvik's value:"""
             
-            # Get Claude's response
-            response = self.client.completions.create(
+            # CORRECT way to call Claude API
+            message = self.client.messages.create(
                 model="claude-3-sonnet-20240229",
-                max_tokens_to_sample=500,
-                prompt=f"\n\nHuman: {prompt}\n\nAssistant:"
+                max_tokens=500,
+                messages=[{"role": "user", "content": prompt}]
             )
             
-            return response.completion
+            return message.content[0].text
             
         except Exception as e:
+            print(f"Error in get_response: {e}")
             return "I'm having trouble processing that request. I'd recommend booking a call with Satvik to discuss this directly. Here's his Calendly link: https://calendly.com/satvikputi/brainstorming"
 
 # Initialize the assistant
