@@ -1,4 +1,4 @@
-# app.py - Full-featured Flask app for Railway
+# app.py - Fixed version with correct Anthropic client initialization
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -13,7 +13,8 @@ class SatvikAIAssistant:
         if not api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable not set")
         
-        self.client = anthropic.Anthropic(api_key=api_key)
+        # Correct initialization for anthropic library
+        self.client = anthropic.Client(api_key=api_key)
         self.content = self.get_all_content()
     
     def get_all_content(self):
@@ -233,13 +234,13 @@ QUESTION: {question}
 Provide a thoughtful, professional response that showcases Satvik's value:"""
             
             # Get Claude's response
-            message = self.client.messages.create(
+            response = self.client.completions.create(
                 model="claude-3-sonnet-20240229",
-                max_tokens=500,
-                messages=[{"role": "user", "content": prompt}]
+                max_tokens_to_sample=500,
+                prompt=f"\n\nHuman: {prompt}\n\nAssistant:"
             )
             
-            return message.content[0].text
+            return response.completion
             
         except Exception as e:
             return "I'm having trouble processing that request. I'd recommend booking a call with Satvik to discuss this directly. Here's his Calendly link: https://calendly.com/satvikputi/brainstorming"
