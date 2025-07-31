@@ -238,7 +238,11 @@ Provide a thoughtful, professional response that showcases Satvik's value:"""
                 messages=[{"role": "user", "content": prompt}]
             )
             
-            return message.content[0].text
+            # Handle API response properly
+            if message.content and len(message.content) > 0:
+                return message.content[0].text
+            else:
+                return "I'm having trouble processing that request. I'd recommend booking a call with Satvik to discuss this directly. Here's his Calendly link: https://calendly.com/satvikputi/brainstorming"
             
         except Exception as e:
             print(f"Error in get_response: {e}")
