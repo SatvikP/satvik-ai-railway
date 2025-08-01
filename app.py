@@ -2,6 +2,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+# Disable proxy environment variables that Railway might be setting
+os.environ.pop('HTTP_PROXY', None)
+os.environ.pop('HTTPS_PROXY', None)
+os.environ.pop('http_proxy', None)
+os.environ.pop('https_proxy', None)
+
 import anthropic
 
 app = Flask(__name__)
