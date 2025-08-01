@@ -15,6 +15,46 @@ def call_anthropic_api(question):
     if not api_key:
         return "API key not configured"
     
+    # DEBUG: Print API key info (don't print the actual key)
+    print(f"API key exists: {api_key is not None}")
+    print(f"API key length: {len(api_key) if api_key else 0}")
+    print(f"API key starts correctly: {api_key.startswith('sk-ant-api03') if api_key else False}")
+    
+    try:
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': api_key,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-3-sonnet-20240229',
+                'max_tokens': 300,
+                'messages': [
+                    {'role': 'user', 'content': f'Answer this question about Satvik: {question}'}
+                ]
+            },
+            timeout=30
+        )
+        
+        # DEBUG: Print response details
+        print(f"Anthropic API Status: {response.status_code}")
+        print(f"Response headers: {dict(response.headers)}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print("✅ Anthropic API call successful")
+            return data['content'][0]['text']
+        else:
+            print(f"❌ API Error: {response.status_code}")
+            print(f"Error response: {response.text}")
+            return "API call failed - check logs"
+            
+    except Exception as e:
+        print(f"❌ Request exception: {e}")
+        return f"Request failed: {str(e)}"
+    
     # Basic context about Satvik
     context = """
 Satvik Puti is a founder of Just Build It. He has experience at Sanofi, Danone, and L'Oréal. 
