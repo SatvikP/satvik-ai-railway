@@ -29,7 +29,7 @@ def call_anthropic_api(question):
                 'anthropic-version': '2023-06-01'
             },
             json={
-                'model': 'claude-3-sonnet-20240229',
+                'model': 'claude-3-5-sonnet-20241022',
                 'max_tokens': 300,
                 'messages': [
                     {'role': 'user', 'content': f'Answer this question about Satvik: {question}'}
