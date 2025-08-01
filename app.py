@@ -14,7 +14,7 @@ class SatvikAIAssistant:
             raise ValueError("ANTHROPIC_API_KEY environment variable not set")
         
         # CORRECT way to initialize Anthropic client
-        self.client = anthropic.Anthropic(api_key=api_key)
+        self.client = anthropic.Anthropic(api_key=api_key, http_client=None)
         self.content = self.get_all_content()
     
     def get_all_content(self):
