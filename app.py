@@ -79,7 +79,7 @@ Give a professional response for VCs/HRs. If you don't know something specific, 
                 'anthropic-version': '2023-06-01'
             },
             json={
-                'model': 'claude-3-sonnet-20240229',
+                'model': 'claude-3-5-sonnet-20241022',
                 'max_tokens': 300,
                 'messages': [
                     {'role': 'user', 'content': prompt}
